@@ -57,7 +57,7 @@ public class GameScreen implements Screen {
 
         // set up backet position on screen
         bucket = new Rectangle();
-        bucket.x = Constants.SCREEN_WIDTH / 2 - BUCKET_SIZE / 2; // the latter is the size of the texture, i.e 64*64
+        bucket.x = Constants.WORLD_WIDTH / 2 - BUCKET_SIZE / 2; // the latter is the size of the texture, i.e 64*64
         bucket.y = 20;
         bucket.width = BUCKET_SIZE;
         bucket.height = BUCKET_SIZE;
@@ -69,8 +69,8 @@ public class GameScreen implements Screen {
 
     private void spawnRainDrop() {
         Rectangle raindrop = new Rectangle();
-        raindrop.x = MathUtils.random(0, 800 - 64);
-        raindrop.y = Constants.SCREEN_HEIGHT;
+        raindrop.x = MathUtils.random(0, 800 - RAINDROP_SIZE);
+        raindrop.y = Constants.WORLD_HEIGHT;
         raindrop.height = RAINDROP_SIZE;
         raindrop.width = RAINDROP_SIZE;
         raindrops.add(raindrop);
@@ -136,7 +136,7 @@ public class GameScreen implements Screen {
 
         // render raindrops
         game.batch.begin();
-        game.font.draw(game.batch, "Drops collected: " + dropsGathered, 0, Constants.SCREEN_HEIGHT);
+        game.font.draw(game.batch, "Drops collected: " + dropsGathered, 0, Constants.WORLD_HEIGHT);
         game.batch.draw(bucketTexture, bucket.x, bucket.y);
         for (Rectangle raindrop: raindrops) {
             game.batch.draw(raindropTexture, raindrop.x, raindrop.y);

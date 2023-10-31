@@ -55,7 +55,7 @@ public class DropGame extends ApplicationAdapter {
 
 		// set up backet position on screen
 		bucket = new Rectangle();
-		bucket.x = Constants.SCREEN_WIDTH / 2 - BUCKET_SIZE / 2; // the latter is the size of the texture, i.e 64*64
+		bucket.x = Constants.WORLD_WIDTH / 2 - BUCKET_SIZE / 2; // the latter is the size of the texture, i.e 64*64
 		bucket.y = 20;
 		bucket.width = BUCKET_SIZE;
 		bucket.height = BUCKET_SIZE;
@@ -119,7 +119,7 @@ public class DropGame extends ApplicationAdapter {
 	private void spawnRainDrop() {
 		Rectangle raindrop = new Rectangle();
 		raindrop.x = MathUtils.random(0, 800 - 64);
-		raindrop.y = Constants.SCREEN_HEIGHT;
+		raindrop.y = Constants.WORLD_HEIGHT;
 		raindrop.height = RAINDROP_SIZE;
 		raindrop.width = RAINDROP_SIZE;
 		raindrops.add(raindrop);
