@@ -26,8 +26,8 @@ public class MainMenuScreen implements Screen {
     private final Skin mainMenuSkin;
     private final ImageButton mainMenuImageButton;
     private final Table mainMenuTable;
-    private final Texture mainMenuTexture;
-    private final Image mainMenuImage;
+    private final Texture mainMenuTexture, logoTexture;
+    private final Image mainMenuImage, logoImage;
 
     public MainMenuScreen(final Drop game) {
         camera = new OrthographicCamera();
@@ -35,11 +35,18 @@ public class MainMenuScreen implements Screen {
         mainMenuStage = new Stage(new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT,
                 camera));
 
-        mainMenuTexture = new Texture("backgrounds/main_menu_px.jpg");
+        mainMenuTexture = new Texture("backgrounds/main_menu_bg.png");
         mainMenuTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         mainMenuImage = new Image(mainMenuTexture);
         mainMenuImage.setSize(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
+        mainMenuImage.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn(1.0f)));
+
+        logoTexture = new Texture("drop_logo.png");
+        logoTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        logoImage = new Image(logoTexture);
+        logoImage.setPosition(Constants.WORLD_WIDTH / 2 - logoImage.getWidth() / 2, Constants.WORLD_HEIGHT - 200);
 
         mainMenuSkin = new Skin(Gdx.files.internal("skins/play.json"),
                 new TextureAtlas(Gdx.files.internal("skins/buttons.atlas")));
@@ -48,12 +55,12 @@ public class MainMenuScreen implements Screen {
         mainMenuTable = new Table();
         mainMenuTable.setSize(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
         mainMenuTable.bottom().add(mainMenuImageButton).size(200f, 200f).padBottom(20f);
+        mainMenuTable.addAction(Actions.sequence(Actions.moveBy(0.0F, -250F), Actions.delay(1.0F), Actions.moveBy(0.0F, 250F, 1.0F, Interpolation.swing)));
 
         mainMenuStage.addActor(mainMenuImage);
-        mainMenuImage.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn(1.0f)));
-
+        mainMenuStage.addActor(logoImage);
         mainMenuStage.addActor(mainMenuTable);
-        mainMenuTable.addAction(Actions.sequence(Actions.moveBy(0.0F, -250F), Actions.delay(1.0F), Actions.moveBy(0.0F, 250F, 1.0F, Interpolation.swing)));
+
 
         mainMenuImageButton.addListener(new ClickListener() {
             @Override
@@ -103,6 +110,7 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         mainMenuStage.dispose();
         mainMenuTexture.dispose();
+        logoTexture.dispose();
         mainMenuSkin.dispose();
     }
 }

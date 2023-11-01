@@ -99,7 +99,8 @@ public class GameScreen implements Screen {
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                bucket.moveBy(x, 0);
+                Gdx.app.log("GameScreen", "touchDragged: x: " + x + "; norm: " + (x - BUCKET_SIZE / 2));
+                bucket.moveBy(x - BUCKET_SIZE / 2, 0);
             }
         });
 
