@@ -1,8 +1,0 @@
-buttons.png
-size:512,256
-filter:Linear,Linear
-repeat:none
-button_idle
-bounds:2,2,200,200
-button_pushed
-bounds:204,2,200,200

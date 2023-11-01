@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -16,7 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -29,29 +32,27 @@ import java.util.Iterator;
 
 public class GameScreen implements Screen {
 
-    private final Drop game;
+    private Drop game;
 
-    private final Texture raindropTexture, bucketTexture, backgroundTexture;
-    private final Sound dropSound;
-    private final Music rainMusic;
-    private final OrthographicCamera camera;
+    private Texture raindropTexture, bucketTexture, backgroundTexture;
+    private Sound dropSound;
+    private Music rainMusic;
+    private OrthographicCamera camera;
 
-    private final Image bucket, backgroundImage;
-    private final Label dropsCollected;
-    private final float BUCKET_SIZE = 64f;
+    private Image bucket, backgroundImage;
+    private Label dropsCollected;
+    private Skin pauseButtonSkin;
+    private ImageButton pauseImageButton;
+    private float BUCKET_SIZE = 64f;
 
-    private final Array<Image> raindropActors;
-    private final float RAINDROP_SIZE = 64f;
+    private Array<Image> raindropActors;
+    private float RAINDROP_SIZE = 64f;
 
     private long lastDropTime;
-    private final String dropsCollectedText = "Drops collected: ";
+    private String dropsCollectedText = "Drops collected: ";
     int dropsGathered;
 
     private Stage gameStage;
-
-    boolean isDragging;
-    float dragStartX;
-    float initialBucketX;
 
     public GameScreen(Drop game) {
         this.game = game;
@@ -65,13 +66,26 @@ public class GameScreen implements Screen {
         raindropTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         bucketTexture = new Texture("bucket.png");
-//        bucketTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        bucketTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        backgroundTexture = new Texture("backgrounds/game.png");
+        backgroundTexture = new Texture("backgrounds/game_bg_tint.png");
         backgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setSize(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
+
+        pauseButtonSkin = new Skin(Gdx.files.internal("skins/pause_button.json"),
+                new TextureAtlas(Gdx.files.internal("skins/menu_buttons.atlas")));
+        pauseImageButton = new ImageButton(pauseButtonSkin);
+        pauseImageButton.setSize(80, 80);
+        pauseImageButton.setPosition(Constants.WORLD_WIDTH - pauseImageButton.getWidth() - 20,
+                Constants.WORLD_HEIGHT - pauseImageButton.getHeight() - 20);
+        pauseImageButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameScreen.this.game.setScreen(new PauseScreen(GameScreen.this.game, GameScreen.this));
+            }
+        });
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(game.font, Color.WHITE);
         dropsCollected = new Label(dropsCollectedText + dropsGathered, labelStyle);
@@ -86,11 +100,6 @@ public class GameScreen implements Screen {
         bucket.setSize(BUCKET_SIZE, BUCKET_SIZE);
         bucket.setPosition(Constants.WORLD_WIDTH / 2 - BUCKET_SIZE / 2, 20);
         bucket.setTouchable(Touchable.enabled);
-        isDragging = false;
-        dragStartX = 0;
-        initialBucketX = bucket.getX();
-        Gdx.app.log("GameScreen", "initialBucketX: " + initialBucketX);
-
         bucket.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -111,9 +120,12 @@ public class GameScreen implements Screen {
 
         raindropActors = new Array<>();
         spawnRainDrop();
+
+        gameStage.addActor(pauseImageButton);
     }
 
     private void spawnRainDrop() {
+        Gdx.app.log("GameScreen", "spawnRaindrop is called");
         Image raindrop = new Image(raindropTexture);
         raindrop.setSize(RAINDROP_SIZE, RAINDROP_SIZE);
         raindrop.setPosition(MathUtils.random(0, 800 - RAINDROP_SIZE), Constants.WORLD_HEIGHT);
@@ -197,11 +209,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-
+//        Gdx.input.setInputProcessor(null);
+        rainMusic.pause();
     }
 
     @Override
     public void dispose() {
+        Gdx.app.log("GameScreen", "dispose is called");
         bucketTexture.dispose();
         raindropTexture.dispose();
         backgroundTexture.dispose();

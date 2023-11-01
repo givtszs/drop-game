@@ -1,0 +1,11 @@
+menu_buttons.png
+size:1024,256
+repeat:none
+pause_idle
+bounds:2,2,200,200
+pause_pushed
+bounds:406,2,200,200
+play_idle
+bounds:204,2,200,200
+play_pushed
+bounds:608,2,200,200

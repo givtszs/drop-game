@@ -21,13 +21,13 @@ import com.mygdx.drop.common.Constants;
 
 public class MainMenuScreen implements Screen {
 
-    private final OrthographicCamera camera;
-    private final Stage mainMenuStage;
-    private final Skin mainMenuSkin;
-    private final ImageButton mainMenuImageButton;
-    private final Table mainMenuTable;
-    private final Texture mainMenuTexture, logoTexture;
-    private final Image mainMenuImage, logoImage;
+    private OrthographicCamera camera;
+    private Stage mainMenuStage;
+    private Skin playButtonSkin;
+    private ImageButton playImageButton;
+    private Table mainMenuTable;
+    private Texture mainMenuTexture, logoTexture;
+    private Image mainMenuImage, logoImage;
 
     public MainMenuScreen(final Drop game) {
         camera = new OrthographicCamera();
@@ -37,7 +37,6 @@ public class MainMenuScreen implements Screen {
 
         mainMenuTexture = new Texture("backgrounds/main_menu_bg.png");
         mainMenuTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
         mainMenuImage = new Image(mainMenuTexture);
         mainMenuImage.setSize(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
         mainMenuImage.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn(1.0f)));
@@ -48,26 +47,24 @@ public class MainMenuScreen implements Screen {
         logoImage = new Image(logoTexture);
         logoImage.setPosition(Constants.WORLD_WIDTH / 2 - logoImage.getWidth() / 2, Constants.WORLD_HEIGHT - 200);
 
-        mainMenuSkin = new Skin(Gdx.files.internal("skins/play.json"),
-                new TextureAtlas(Gdx.files.internal("skins/buttons.atlas")));
-        mainMenuImageButton = new ImageButton(mainMenuSkin);
-
-        mainMenuTable = new Table();
-        mainMenuTable.setSize(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
-        mainMenuTable.bottom().add(mainMenuImageButton).size(200f, 200f).padBottom(20f);
-        mainMenuTable.addAction(Actions.sequence(Actions.moveBy(0.0F, -250F), Actions.delay(1.0F), Actions.moveBy(0.0F, 250F, 1.0F, Interpolation.swing)));
-
-        mainMenuStage.addActor(mainMenuImage);
-        mainMenuStage.addActor(logoImage);
-        mainMenuStage.addActor(mainMenuTable);
-
-
-        mainMenuImageButton.addListener(new ClickListener() {
+        playButtonSkin = new Skin(Gdx.files.internal("skins/play_button.json"),
+                new TextureAtlas(Gdx.files.internal("skins/menu_buttons.atlas")));
+        playImageButton = new ImageButton(playButtonSkin);
+        playImageButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new GameScreen(game));
             }
         });
+
+        mainMenuTable = new Table();
+        mainMenuTable.setSize(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
+        mainMenuTable.bottom().add(playImageButton).size(200f, 200f).padBottom(20f);
+        mainMenuTable.addAction(Actions.sequence(Actions.moveBy(0.0F, -250F), Actions.delay(1.0F), Actions.moveBy(0.0F, 250F, 1.0F, Interpolation.swing)));
+
+        mainMenuStage.addActor(mainMenuImage);
+        mainMenuStage.addActor(logoImage);
+        mainMenuStage.addActor(mainMenuTable);
     }
 
     @Override
@@ -111,6 +108,6 @@ public class MainMenuScreen implements Screen {
         mainMenuStage.dispose();
         mainMenuTexture.dispose();
         logoTexture.dispose();
-        mainMenuSkin.dispose();
+        playButtonSkin.dispose();
     }
 }

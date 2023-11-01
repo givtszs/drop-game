@@ -3,9 +3,9 @@
 
     "default": {
 
-      "up": "button_idle",
+      "up": "pause_idle",
 
-      "down": "button_pushed",
+      "down": "pause_pushed",
 
       "unpressedOffsetY":-10
 
