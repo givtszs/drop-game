@@ -1,4 +1,4 @@
-package com.mygdx.drop.scene2d.screens;
+package com.mygdx.drop.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
